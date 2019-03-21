@@ -21,20 +21,28 @@ namespace Api.Controllers
 
         public AuthenticateController(IUserService service)
         {
-            SetInitialData();
+            //SetInitialData();
             _userService = service;
         }
 
         [HttpPost]
         [Route("Api/Authentication/Register")]
-        public async Task<IHttpActionResult> Register(UserDTO user)
+        public  IHttpActionResult Register(UserDTO user)
         {
-            
+            _userService.SetInitialData(new UserDTO
+            {
+                Email = "somemail@mail.ru",
+                UserName = "somemail@mail.ru",
+                Password = "123",
+                Name = "Семен Семенович Горбунков",
+                Address = "ул. Спортивная, д.30, кв.75",
+                Role = "admin",
+            }, new List<string> { "user", "admin" });
             //if (!ModelState.IsValid)
-                //return BadRequest();
+            //return BadRequest();
             try
             {
-                await _userService.Create(user);
+                 _userService.Create(user);
                 return Ok();
             }
             catch (Exception )

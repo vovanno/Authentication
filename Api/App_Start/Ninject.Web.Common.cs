@@ -1,3 +1,6 @@
+using AuthenticateBLL.Interfaces;
+using AuthenticateBLL.Services;
+
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Api.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Api.App_Start.NinjectWebCommon), "Stop")]
 
@@ -67,7 +70,9 @@ namespace Api.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>();
+            kernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>().WithConstructorArgument("DefaultConnection");
+            kernel.Bind<IUserService>().To<UserService>();
+
         }
     }
 }
