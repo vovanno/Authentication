@@ -67,7 +67,7 @@ namespace Api.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            //kernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>();
+            kernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
+
 
 namespace Api.Controllers
 {
@@ -14,17 +14,24 @@ namespace Api.Controllers
     {
         private readonly IUserService _userService;
 
+        public AuthenticateController()
+        {
+            
+        }
+
         public AuthenticateController(IUserService service)
         {
             SetInitialData();
             _userService = service;
         }
 
+        [HttpPost]
+        [Route("Api/Authentication/Register")]
         public async Task<IHttpActionResult> Register(UserDTO user)
         {
             
-            if (!ModelState.IsValid)
-                return BadRequest();
+            //if (!ModelState.IsValid)
+                //return BadRequest();
             try
             {
                 await _userService.Create(user);
@@ -36,8 +43,6 @@ namespace Api.Controllers
             }
         }
 
-        [System.Web.Http.HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IHttpActionResult> Login(UserDTO user)
         {
             if (!ModelState.IsValid)

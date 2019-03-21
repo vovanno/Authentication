@@ -126,10 +126,14 @@ E:\Projects\AuthenticateProject\Api\bin\Ninject.dll
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.Common.dll
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.Common.WebHost.dll
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.WebApi.dll
-E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.WebApi.WebHost.dll
 E:\Projects\AuthenticateProject\Api\bin\WebActivatorEx.dll
 E:\Projects\AuthenticateProject\Api\bin\Ninject.xml
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.Common.xml
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.Common.WebHost.xml
 E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.WebApi.xml
-E:\Projects\AuthenticateProject\Api\bin\Ninject.Web.WebApi.WebHost.xml
+E:\Projects\AuthenticateProject\Api\bin\EntityFramework.dll
+E:\Projects\AuthenticateProject\Api\bin\EntityFramework.SqlServer.dll
+E:\Projects\AuthenticateProject\Api\bin\EntityFramework.SqlServer.xml
+E:\Projects\AuthenticateProject\Api\bin\System.Web.Http.Cors.dll
+E:\Projects\AuthenticateProject\Api\bin\System.Web.Http.Cors.xml
+E:\Projects\AuthenticateProject\Api\bin\MultipartDataMediaFormatter.dll

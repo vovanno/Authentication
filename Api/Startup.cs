@@ -15,10 +15,10 @@ namespace Api
         {
             app.CreatePerOwinContext(AppContext.Create);
             ConfigureOAuth(app);
-            var config = new HttpConfiguration();
-            WebApiConfig.Register(config);
-            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-            app.UseWebApi(config);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            //app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            //app.UseWebApi(config);
         }
 
         public void ConfigureOAuth(IAppBuilder app)
@@ -33,6 +33,8 @@ namespace Api
             app.UseOAuthBearerTokens(oAuthServerOptions);
             app.UseOAuthAuthorizationServer(oAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            var config = new HttpConfiguration();
+            WebApiConfig.Register(config);
 
         }
     }

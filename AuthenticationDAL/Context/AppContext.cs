@@ -6,10 +6,7 @@ namespace AuthenticationDAL.Context
 {
     public class AppContext : IdentityDbContext<AppUser>
     {
-        public AppContext()
-        {
-            
-        }
+        
         public AppContext(string connectionString) : base(connectionString)
         {
             
@@ -19,7 +16,7 @@ namespace AuthenticationDAL.Context
 
         public static AppContext Create()
         {
-            return new AppContext();
+            return new AppContext("DefaultConnectionS");
         }
     }
 }
