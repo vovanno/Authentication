@@ -1,88 +1,81 @@
 ﻿using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
-using Microsoft.Owin.Security;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNet.Identity;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 
 
 namespace Api.Controllers
 {
+    [Route("Api/Authentication/")]
     public class AuthenticateController : ApiController
     {
-        private readonly IUserService _userService;
-
-        public AuthenticateController()
+        private readonly IAuthenticateService _authenticate;
+        
+        public AuthenticateController(IAuthenticateService service)
         {
-            
+            _authenticate = service;
         }
 
-        public AuthenticateController(IUserService service)
+        public async Task SetInitialData()
         {
-            //SetInitialData();
-            _userService = service;
+            var admin= new UserDTO() {Email = "admin@gmail.com",UserName = "Admin"};
+            await _authenticate.SetInitialData(admin);
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("Api/Authentication/Register")]
-        public  IHttpActionResult Register(UserDTO user)
+        public async Task<IHttpActionResult> Register(UserDTO model)
         {
-            _userService.SetInitialData(new UserDTO
-            {
-                Email = "somemail@mail.ru",
-                UserName = "somemail@mail.ru",
-                Password = "123",
-                Name = "Семен Семенович Горбунков",
-                Address = "ул. Спортивная, д.30, кв.75",
-                Role = "admin",
-            }, new List<string> { "user", "admin" });
-            //if (!ModelState.IsValid)
-            //return BadRequest();
-            try
-            {
-                 _userService.Create(user);
-                return Ok();
-            }
-            catch (Exception )
-            {
-                return BadRequest();
-            }
-        }
-
-        public async Task<IHttpActionResult> Login(UserDTO user)
-        {
+            await SetInitialData();
             if (!ModelState.IsValid)
-                return BadRequest();
-            var result = await _userService.Authenticate(user);
-            if(result==null)
-                ModelState.AddModelError("", "Неверный логин или пароль.");
-            var context = HttpContext.Current.GetOwinContext().Authentication;
-            context.SignOut();
-            context.SignIn(new AuthenticationProperties()
             {
-                IsPersistent = true
-
-            },result);
-            return Ok();
+                return BadRequest(ModelState);
+            }
+            var result = await _authenticate.Create(model);
+            return !result.Succeeded ? GetErrorResult(result) : Ok();
         }
 
-        private void SetInitialData()
+        private IHttpActionResult GetErrorResult(IdentityResult result)
         {
-             _userService.SetInitialData(new UserDTO
+            if (result == null)
             {
-                Email = "somemail@mail.ru",
-                UserName = "somemail@mail.ru",
-                Password = "123",
-                Name = "Семен Семенович Горбунков",
-                Address = "ул. Спортивная, д.30, кв.75",
-                Role = "admin",
-            }, new List<string> { "user", "admin" });
+                return InternalServerError();
+            }
+
+            if (result.Succeeded)
+                return null;
+            if (result.Errors != null)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+            if (ModelState.IsValid)
+            {
+                // Ошибки ModelState для отправки отсутствуют, поэтому просто возвращается пустой BadRequest.
+                return BadRequest();
+            }
+            return BadRequest(ModelState);
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("api/GetUserClaims")]
+        public UserDTO GetUserClaims()
+        {
 
-
-
+            var identityClaims = (ClaimsIdentity)User.Identity;
+            var model = new UserDTO()
+            {
+                Id = identityClaims.FindFirst("Id").Value,
+                UserName = identityClaims.FindFirst("UserName").Value,
+                Email = identityClaims.FindFirst("Email").Value,
+            };
+            return model;
+        }
     }
 }

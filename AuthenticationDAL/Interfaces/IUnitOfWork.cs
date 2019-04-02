@@ -7,8 +7,8 @@ namespace AuthenticationDAL.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IClientManager ClientManager { get; }
-        AppRoleManager RoleManager { get; }
-        AppUserManager UserManager { get; }
+        IRoleManager RoleManager { get; }
+        IUserManager UserManager { get; }
         Task SaveAsync();
     }
 }

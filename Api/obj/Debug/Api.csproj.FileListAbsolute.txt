@@ -137,3 +137,13 @@ E:\Projects\AuthenticateProject\Api\bin\EntityFramework.SqlServer.xml
 E:\Projects\AuthenticateProject\Api\bin\System.Web.Http.Cors.dll
 E:\Projects\AuthenticateProject\Api\bin\System.Web.Http.Cors.xml
 E:\Projects\AuthenticateProject\Api\bin\MultipartDataMediaFormatter.dll
+E:\Projects\AuthenticateProject\Api\bin\ru\EntityFramework.resources.dll
+E:\Projects\AuthenticateProject\Api\bin\ru\EntityFramework.SqlServer.resources.dll
+E:\Projects\AuthenticateProject\Api\bin\ru\Microsoft.AspNet.Identity.Core.resources.dll
+E:\Projects\AuthenticateProject\Api\bin\ru\Microsoft.AspNet.Identity.Owin.resources.dll
+E:\Projects\AuthenticateProject\Api\bin\ru\Microsoft.AspNet.Identity.EntityFramework.resources.dll
+E:\Projects\AuthenticateProject\Api\bin\AutoMapper.dll
+E:\Projects\AuthenticateProject\Api\bin\System.ValueTuple.dll
+E:\Projects\AuthenticateProject\Api\bin\AutoMapper.pdb
+E:\Projects\AuthenticateProject\Api\bin\AutoMapper.xml
+E:\Projects\AuthenticateProject\Api\bin\System.ValueTuple.xml

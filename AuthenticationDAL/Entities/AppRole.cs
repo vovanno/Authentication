@@ -4,5 +4,6 @@ namespace AuthenticationDAL.Entities
 {
     public class AppRole : IdentityRole
     {
+
     }
 }

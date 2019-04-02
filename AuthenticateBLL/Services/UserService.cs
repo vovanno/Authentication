@@ -1,66 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
 using AuthenticationDAL.Entities;
 using AuthenticationDAL.Interfaces;
-using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
+using AutoMapper;
 
 namespace AuthenticateBLL.Services
 {
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unit;
+        private readonly IMapper _mapper;
 
         public UserService(IUnitOfWork unit)
         {
             _unit = unit;
+            _mapper = new MapperConfiguration(c=>c.CreateMap<ProfileDTO, ClientProfile>().ReverseMap()).CreateMapper();
         }
 
-        public async Task<IdentityResult> Create(UserDTO user)
+        public IEnumerable<ProfileDTO> GetUsersList()
         {
-            var tempUser = await _unit.UserManager.FindByEmailAsync(user.Email);
-            if (tempUser != null)
-            {
-                throw new Exception("User already exist");
-            }
-            tempUser = new AppUser() { Email = user.Email, UserName = user.UserName };
-            await _unit.UserManager.CreateAsync(tempUser, user.Password);
-            var profile = new ClientProfile() { Id = tempUser.Id, Address = user.Address, Name = user.Name };
-            _unit.ClientManager.Create(profile);
-            await _unit.SaveAsync();
-            return await _unit.UserManager.AddToRoleAsync(tempUser.Id, user.Role);
+            return _mapper.Map<IEnumerable<ProfileDTO>>(_unit.ClientManager.GetUsersList());
         }
 
-        public async Task<ClaimsIdentity> Authenticate(UserDTO user)
+        public async Task<ProfileDTO> CreateProfile(ProfileDTO profile)
         {
-            ClaimsIdentity claims = null;
-            var tempUser = await _unit.UserManager.FindAsync(user.Email, user.Password);
-            if(tempUser!=null)
-                claims = await _unit.UserManager.CreateIdentityAsync(tempUser,DefaultAuthenticationTypes.ExternalBearer);
-            return claims;
+            var result = await _unit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(profile));
+            return _mapper.Map<ProfileDTO>(result);
         }
 
-        public async Task SetInitialData(UserDTO admin, List<string> roles)
+        public async Task<ProfileDTO> GetUserProfile(string id)
         {
-            foreach (var role in roles)
-            {
-                var roleOb = await _unit.RoleManager.FindByNameAsync(role);
-                if (roleOb == null)
-                {
-                    roleOb = new AppRole();
-                    await _unit.RoleManager.CreateAsync(roleOb);
-                }
-            }
-
-            await Create(admin);
+            var result = await _unit.ClientManager.GetProfileAsync(id);
+            return result == null ? new ProfileDTO() { FirstName = "", LastName = "", Address = "" } : _mapper.Map<ProfileDTO>(result);
         }
 
-        public void Dispose()
+        public async Task<bool> ModifyUserProfile(ProfileDTO profile)
         {
-            throw new System.NotImplementedException();
+            return await _unit.ClientManager.ModifyProfileAsync(_mapper.Map<ClientProfile>(profile));
         }
     }
 }
