@@ -202,6 +202,7 @@
     <Compile Include="App_Start\Ninject.Web.Common.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\StartupAuth.cs" />
+    <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Models\ProfileViewModel.cs" />
     <Compile Include="Startup.cs" />
@@ -295,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Image\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -326,9 +328,13 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AuthenticateBLL\AuthenticateBLL.csproj">
+    <ProjectReference Include="..\ApplicationDAL\ApplicationDAL.csproj">
+      <Project>{85e9e63d-8961-42c7-a8b7-5cb49f774a2f}</Project>
+      <Name>ApplicationDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AuthenticateBLL\BLL.csproj">
       <Project>{0c2e996f-2ffc-44b8-abe0-91e11ec856a9}</Project>
-      <Name>AuthenticateBLL</Name>
+      <Name>BLL</Name>
     </ProjectReference>
     <ProjectReference Include="..\AuthenticationDAL\AuthenticationDAL.csproj">
       <Project>{60db0371-7fef-4a72-9431-5ff15afc94c8}</Project>

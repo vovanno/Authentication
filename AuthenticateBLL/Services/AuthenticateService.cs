@@ -1,36 +1,44 @@
 ﻿using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
-using AuthenticationDAL.Entities;
 using AuthenticationDAL.Interfaces;
+using AutoMapper;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
+using ApplicationDAL.Entities;
+using ApplicationDAL.Interfaces;
 
 namespace AuthenticateBLL.Services
 {
     public class AuthenticateService : IAuthenticateService
     {
         private readonly IUnitOfWork _unit;
+        private readonly IAppUnitOfWork _appUnit;
         private readonly IMapper _mapper;
 
-        public AuthenticateService(IUnitOfWork unit)
+        public AuthenticateService(IUnitOfWork unit, IAppUnitOfWork appUnit)
         {
             _mapper = new MapperConfiguration(c => c.CreateMap<ProfileDTO, ClientProfile>().ReverseMap()).CreateMapper();
             _unit = unit;
+            _appUnit = appUnit;
         }
 
         public async Task<IdentityResult> Create(UserDTO user)
         {
-            var tempUser = await _unit.UserManager.FindByEmailAsync(user.Email); 
+            var tempUser = await _unit.UserManager.FindByEmailAsync(user.Email);
             if (tempUser != null)
             {
                 throw new Exception("User already exist");
             }
-            tempUser = new AppUser() { Email = user.Email, UserName = user.UserName };
+            tempUser = new IdentityUser() { Email = user.Email, UserName = user.UserName };
             var result = await _unit.UserManager.CreateAsync(tempUser, user.Password);
-            await _unit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO(){Id = tempUser.Id}));
+            await _appUnit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
+            {
+                Id = tempUser.Id,
+                AvatarImage = "DefaultUser.jpg"
+        }));
             if (result.Succeeded)
             {
                 var getId = await _unit.UserManager.FindByEmailAsync(user.Email);
@@ -44,14 +52,14 @@ namespace AuthenticateBLL.Services
             var temp = await _unit.UserManager.FindByEmailAsync(admin.Email);
             if (temp != null)
                 return;
-            var adm = new AppUser() { Email = admin.Email, UserName = admin.UserName };
+            var adm = new IdentityUser() { Email = admin.Email, UserName = admin.UserName };
             var roles = new List<string>() { "admin", "user" };
             foreach (var role in roles)
             {
                 var roleOb = await _unit.RoleManager.FindByNameAsync(role);
                 if (roleOb == null)
                 {
-                    roleOb = new AppRole() { Name = role };
+                    roleOb = new IdentityRole() { Name = role };
                     await _unit.RoleManager.CreateAsync(roleOb);
                 }
             }
@@ -59,8 +67,8 @@ namespace AuthenticateBLL.Services
             var result = await _unit.UserManager.CreateAsync(adm, password);
             if (result.Succeeded)
             {
-                await _unit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
-                    {Id = adm.Id}));
+                await _appUnit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
+                { Id = adm.Id, AvatarImage = "DefaultUser.jpg"}));
                 var getId = await _unit.UserManager.FindByEmailAsync(admin.Email);
                 await _unit.UserManager.AddToRoleAsync(getId.Id, "admin");
             }

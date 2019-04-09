@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using AuthenticationDAL.Entities;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Threading.Tasks;
 
 namespace AuthenticationDAL.Interfaces
 {
     public interface IRoleManager
     {
-        Task<AppRole> FindByNameAsync(string roleName);
-        Task<IdentityResult> CreateAsync(AppRole role);
+        Task<IdentityRole> FindByNameAsync(string roleName);
+        Task<IdentityResult> CreateAsync(IdentityRole role);
     }
 }

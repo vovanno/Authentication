@@ -1,6 +1,8 @@
+using ApplicationDAL.Repositories;
 using AuthenticateBLL.Interfaces;
 using AuthenticateBLL.Services;
-using Microsoft.Owin;
+using AuthenticationDAL.Context;
+
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Api.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Api.App_Start.NinjectWebCommon), "Stop")]
@@ -20,8 +22,7 @@ namespace Api.App_Start
 
     using AuthenticationDAL.Interfaces;
     using AuthenticationDAL.Repositories;
-    using AuthenticationDAL.Context;
-    using AppContext = AuthenticationDAL.Context.AppContext;
+    using ApplicationDAL.Interfaces;
 
     public static class NinjectWebCommon
     {
@@ -73,10 +74,15 @@ namespace Api.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-            kernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>();
-            kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
-            kernel.Bind<IApplicationContext>().To<AppContext>().WithConstructorArgument("DefaultConnection");
+            kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
+            kernel.Bind<IAppUnitOfWork>().To<AppUnitOfWork>();
+
+            kernel.Bind<IIdentiyContext>().To<IdentityContext>().WithConstructorArgument("DefaultConnection");
+            kernel.Bind<IAppContext>().To<ApplicationDAL.Context.AppContext>().WithConstructorArgument("AppDataConnection");
+
             kernel.Bind<IUserService>().To<UserService>();
+            kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
+            kernel.Bind<IImageService>().To<ImageService>();
 
 
         }

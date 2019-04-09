@@ -1,13 +1,11 @@
-﻿using AuthenticationDAL.Identity;
-using AuthenticationDAL.Providers;
+﻿using AuthenticationDAL.Providers;
 using Microsoft.Owin;
+using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
-using AuthenticationDAL.Entities;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin.Cors;
-using AppContext = AuthenticationDAL.Context.AppContext;
+using AuthenticationDAL.Managers;
+using IdentityContext = AuthenticationDAL.Context.IdentityContext;
 
 namespace Api
 {
@@ -20,7 +18,7 @@ namespace Api
         public void ConfigureAuth(IAppBuilder app)
         {
             // Настройка контекста базы данных и диспетчера пользователей для использования одного экземпляра на запрос
-            app.CreatePerOwinContext(AppContext.Create);
+            app.CreatePerOwinContext(IdentityContext.Create);
             app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
             app.UseCors(CorsOptions.AllowAll);
 
