@@ -51,10 +51,23 @@ namespace Api.Controllers
         [Route("GetUserImages")]
         public IEnumerable<ImageDTO> GetUserImages()
         {
-            var user = (ClaimsIdentity)User.Identity;
+            var user = (ClaimsIdentity) User.Identity;
             var result = _image.GetUserImages(user.FindFirst("Id").Value).ToList();
             if (!result.Any())
                 return null;
+            foreach (var image in result)
+            {
+                image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
+            }
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("Search/{caption}")]
+        public IEnumerable<ImageDTO> SearchImages(string caption)
+        {
+            var result =_image.SearchImages(caption);
             foreach (var image in result)
             {
                 image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
@@ -76,6 +89,29 @@ namespace Api.Controllers
                 return Ok();
             return NotFound();
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetAllImages/{page:int:min(1)}")]
+        public IEnumerable<ImageDTO> GetAllImages(int page)
+        {
+            var result = _image.GetAllImages(page).ToList();
+            foreach (var image in result)
+            {
+                image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
+            }
+            return result;
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("GetPages")]
+        public int GetPages()
+        {
+            return _image.GetPages();
+        }
+
+
 
     }
 }

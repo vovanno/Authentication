@@ -1,4 +1,5 @@
-﻿using ApplicationDAL.Entities;
+﻿using System;
+using ApplicationDAL.Entities;
 using ApplicationDAL.Interfaces;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -43,9 +44,27 @@ namespace ApplicationDAL.Repositories
             return task != null;
         }
 
-        public IEnumerable<Image> GetAllImages()
+        public IEnumerable<Image> GetAllImages(int page)
         {
-            throw new System.NotImplementedException();
+            var pageNumber=1;
+            const int pageSize = 8;
+            var totalItems = _context.Images.AsEnumerable().ToList().Count;
+            var totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
+            if (page > 0 && page <totalPages+1)
+                pageNumber = page;
+            return _context.Images.AsEnumerable().ToList().Skip((pageNumber - 1) * pageSize).Take(pageSize);
+        }
+
+        public IEnumerable<Image> SearchImages(string caption)
+        {
+            return _context.Images.AsEnumerable().Where(p => p.Caption == caption);
+        }
+
+        public int GetPages()
+        {
+            const int pageSize = 8;
+            var totalItems = _context.Images.AsEnumerable().ToList().Count;
+            return (int)Math.Ceiling((decimal)totalItems / pageSize);
         }
 
         public void Dispose()

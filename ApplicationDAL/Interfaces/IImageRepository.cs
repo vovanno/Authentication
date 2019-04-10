@@ -10,6 +10,8 @@ namespace ApplicationDAL.Interfaces
         Task<bool> UploadImage(Image image);
         IEnumerable<Image> GetUserImages(string id);
         Task<bool> DeleteImage(string imageName);
-        IEnumerable<Image> GetAllImages();
+        IEnumerable<Image> GetAllImages(int page);
+        IEnumerable<Image> SearchImages(string caption);
+        int GetPages();
     }
 }

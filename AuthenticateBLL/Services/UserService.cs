@@ -2,6 +2,7 @@
 using ApplicationDAL.Interfaces;
 using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
+using AuthenticationDAL.Interfaces;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,11 +12,13 @@ namespace AuthenticateBLL.Services
     public class UserService : IUserService
     {
         private readonly IAppUnitOfWork _appUnit;
+        private readonly IUnitOfWork _authUnit;
         private readonly IMapper _mapper;
 
-        public UserService(IAppUnitOfWork appUnit)
+        public UserService(IAppUnitOfWork appUnit, IUnitOfWork unit)
         {
             _appUnit = appUnit;
+            _authUnit = unit;
             _mapper = new MapperConfiguration(c=>c.CreateMap<ProfileDTO, ClientProfile>().ReverseMap()).CreateMapper();
         }
 
@@ -38,6 +41,12 @@ namespace AuthenticateBLL.Services
             result.LastName = "";
             result.Address = "";
             return _mapper.Map<ProfileDTO>(result);
+        }
+
+        public  ProfileDTO FindByEmailAsync(string email)
+        {
+            var result =  _authUnit.UserManager.FindByEmailAsync(email);
+            return result != null ? _mapper.Map<ProfileDTO>(result) : null;
         }
 
         public async Task<bool> ModifyUserProfile(ProfileDTO profile)

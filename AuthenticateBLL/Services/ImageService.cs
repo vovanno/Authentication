@@ -29,9 +29,26 @@ namespace AuthenticateBLL.Services
             return _mapper.Map<IEnumerable<ImageDTO>>(result);
         }
 
+        public IEnumerable<ImageDTO> SearchImages(string caption)
+        {
+            var result = _appUnit.ImageManager.SearchImages(caption);
+            return _mapper.Map<IEnumerable<ImageDTO>>(result);
+        }
+
         public async Task<bool> DeleteImage(string imageName)
         {
             return await _appUnit.ImageManager.DeleteImage(imageName);
+        }
+
+        public IEnumerable<ImageDTO> GetAllImages(int page)
+        {
+            var result = _appUnit.ImageManager.GetAllImages(page);
+            return _mapper.Map<IEnumerable<ImageDTO>>(result);
+        }
+
+        public int GetPages()
+        {
+            return _appUnit.ImageManager.GetPages();
         }
     }
 }

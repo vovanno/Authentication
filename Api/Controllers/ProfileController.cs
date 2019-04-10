@@ -16,10 +16,12 @@ namespace Api.Controllers
     public class ProfileController : ApiController
     {
         private readonly IUserService _userService;
+        private readonly IImageService _image;
 
-        public ProfileController(IUserService service)
+        public ProfileController(IUserService service, IImageService image)
         {
             _userService = service;
+            _image = image;
         }
 
         [HttpPost]
@@ -88,6 +90,20 @@ namespace Api.Controllers
             var temp = await _userService.GetUserProfile(profileId);
             temp.AvatarImage = "http://localhost:51312/Image/" + temp.AvatarImage;
             return temp;
+        }
+
+        [HttpGet]
+        [Route("{id}/Images")]
+        public IEnumerable<ImageDTO> GetUserImages(string id)
+        {
+            var result = _image.GetUserImages(id).ToList();
+            if (!result.Any())
+                return null;
+            foreach (var image in result)
+            {
+                image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
+            }
+            return result;
         }
     }
 }
