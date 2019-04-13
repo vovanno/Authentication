@@ -32,6 +32,12 @@ namespace AuthenticateBLL.Services
             return await _appUnit.ClientManager.UpdateAvatar(id, name);
         }
 
+        public async Task<UserDTO> GetUserByIdAsync(string id)
+        {
+            var result =  await _authUnit.UserManager.FindByIdAsync(id);
+            return _mapper.Map<UserDTO>(result);
+        }
+
         public async Task<ProfileDTO> GetUserProfile(string id)
         {
             var result = await _appUnit.ClientManager.GetProfileAsync(id);
@@ -41,12 +47,6 @@ namespace AuthenticateBLL.Services
             result.LastName = "";
             result.Address = "";
             return _mapper.Map<ProfileDTO>(result);
-        }
-
-        public  ProfileDTO FindByEmailAsync(string email)
-        {
-            var result =  _authUnit.UserManager.FindByEmailAsync(email);
-            return result != null ? _mapper.Map<ProfileDTO>(result) : null;
         }
 
         public async Task<bool> ModifyUserProfile(ProfileDTO profile)

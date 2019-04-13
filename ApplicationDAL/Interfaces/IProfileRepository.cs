@@ -13,5 +13,6 @@ namespace ApplicationDAL.Interfaces
         Task<bool> ModifyProfileAsync(ClientProfile profile);
         IEnumerable<ClientProfile> GetUsersList();
         Task<bool> UpdateAvatar(string id, string name);
+        Task<bool> DeleteProfileAsync(ClientProfile profile);
     }
 }

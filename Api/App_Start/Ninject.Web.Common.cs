@@ -83,6 +83,7 @@ namespace Api.App_Start
             kernel.Bind<IUserService>().To<UserService>();
             kernel.Bind<IAuthenticateService>().To<AuthenticateService>();
             kernel.Bind<IImageService>().To<ImageService>();
+            kernel.Bind<IAdminService>().To<AdminService>();
 
 
         }

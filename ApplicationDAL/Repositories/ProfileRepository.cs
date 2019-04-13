@@ -32,6 +32,17 @@ namespace ApplicationDAL.Repositories
             return true;
         }
 
+        public async Task<bool> DeleteProfileAsync(ClientProfile profile)
+        {
+            var result = await _context.ClientProfiles.FindAsync(profile);
+            if (result == null)
+                return false;
+            _context.ClientProfiles.Remove(profile);
+            _context.Entry(profile).State = EntityState.Deleted;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<ClientProfile> CreateProfileAsync(ClientProfile profile)
         {
             var result = _context.ClientProfiles.Add(profile);

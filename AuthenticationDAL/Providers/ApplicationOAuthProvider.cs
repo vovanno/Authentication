@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,12 +10,12 @@ namespace AuthenticationDAL.Providers
 {
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
-        private readonly string _publicClientId;
+        //private readonly string _publicClientId;
 
-        public ApplicationOAuthProvider(string publicClientId)
-        {
-            _publicClientId = publicClientId ?? throw new ArgumentNullException("publicClientId");
-        }
+        //public ApplicationOAuthProvider()
+        //{
+        //    //_publicClientId = publicClientId ?? throw new ArgumentNullException();
+        //}
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
@@ -82,20 +81,20 @@ namespace AuthenticationDAL.Providers
             return Task.FromResult<object>(null);
         }
 
-        public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
-        {
-            if (context.ClientId == _publicClientId)
-            {
-                var expectedRootUri = new Uri(context.Request.Uri, "/");
+        //public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
+        //{
+        //    if (context.ClientId == _publicClientId)
+        //    {
+        //        var expectedRootUri = new Uri(context.Request.Uri, "/");
 
-                if (expectedRootUri.AbsoluteUri == context.RedirectUri)
-                {
-                    context.Validated();
-                }
-            }
+        //        if (expectedRootUri.AbsoluteUri == context.RedirectUri)
+        //        {
+        //            context.Validated();
+        //        }
+        //    }
 
-            return Task.FromResult<object>(null);
-        }
+        //    return Task.FromResult<object>(null);
+        //}
 
         public static AuthenticationProperties CreateProperties(string userName)
         {

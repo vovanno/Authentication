@@ -298,3 +298,15 @@ D:\Projects\AuthenticateProject\Api\obj\Debug\Api.csproj.CoreCompileInputs.cache
 D:\Projects\AuthenticateProject\Api\obj\Debug\Api.csproj.CopyComplete
 D:\Projects\AuthenticateProject\Api\obj\Debug\Api.dll
 D:\Projects\AuthenticateProject\Api\obj\Debug\Api.pdb
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Logging.dll
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Tokens.dll
+D:\Projects\AuthenticateProject\Api\bin\System.IdentityModel.Tokens.Jwt.dll
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.JsonWebTokens.pdb
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.JsonWebTokens.xml
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Logging.pdb
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Logging.xml
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Tokens.pdb
+D:\Projects\AuthenticateProject\Api\bin\Microsoft.IdentityModel.Tokens.xml
+D:\Projects\AuthenticateProject\Api\bin\System.IdentityModel.Tokens.Jwt.pdb
+D:\Projects\AuthenticateProject\Api\bin\System.IdentityModel.Tokens.Jwt.xml
