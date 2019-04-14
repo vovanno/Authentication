@@ -6,6 +6,10 @@ using ApplicationDAL.Entities;
 
 namespace ApplicationDAL.Interfaces
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides context access through an interface.
+    /// </summary>
     public interface IAppContext : IDisposable
     {
         DbSet<Image> Images { get; set; }

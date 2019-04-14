@@ -11,6 +11,10 @@ using System.Web.Http;
 
 namespace Api.Controllers
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Controller for interaction with user's accounts. Allows only authorize users.
+    /// </summary>
     [Authorize]
     [RoutePrefix("Api/Profile")]
     public class ProfileController : ApiController

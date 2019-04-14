@@ -5,6 +5,10 @@ using ApplicationDAL.Entities;
 
 namespace ApplicationDAL.Interfaces
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides access for interaction with images.
+    /// </summary>
     public interface IImageRepository : IDisposable
     {
         Task<bool> UploadImage(Image image);

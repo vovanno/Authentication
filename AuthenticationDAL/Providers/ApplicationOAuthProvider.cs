@@ -1,108 +1,53 @@
 ﻿using AuthenticationDAL.Managers;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AuthenticationDAL.Providers
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Implementation of OAuthAuthorizationServerProvider class, used by server to communicate with web application.
+    /// </summary>
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
-        //private readonly string _publicClientId;
-
-        //public ApplicationOAuthProvider()
-        //{
-        //    //_publicClientId = publicClientId ?? throw new ArgumentNullException();
-        //}
-
+        /// <inheritdoc />
+        /// <summary>
+        /// Method responsible for validating the resource owner credentials and creating claims if user exist.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-
             var userManager = context.OwinContext.GetUserManager<AppUserManager>();
-
-
             var user = await userManager.FindAsync(context.UserName, context.Password);
-            if (user != null)
+            if (user == null)
             {
-                var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-                identity.AddClaim(new Claim("Id", user.Id));
-                identity.AddClaim(new Claim("Email", user.Email));
-                identity.AddClaim(new Claim("UserName", user.UserName));
-                //identity.AddClaim(new Claim("LoggedOn", DateTime.Now.ToString()));
-                context.Validated(identity);
+                context.SetError("invalid_grant", "The user name or password is incorrect.");
+                return;
             }
-
-            //
-
-            //var user = await userManager.FindAsync(context.UserName, context.Password);
-
-            //if (user == null)
-            //{
-            //    context.SetError("invalid_grant", "Имя пользователя или пароль указаны неправильно.");
-            //    return;
-            //}
-
-            //var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
-            //   OAuthDefaults.AuthenticationType);
-            ////var cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
-            ////    CookieAuthenticationDefaults.AuthenticationType);
-            //var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            //identity.AddClaim(new Claim("Id", user.Id));
-            //identity.AddClaim(new Claim("Username", user.UserName));
-            //identity.AddClaim(new Claim("Email", user.Email));
-            //context.Validated(identity);
-
-            //var properties = CreateProperties(user.UserName);
-            //var ticket = new AuthenticationTicket(oAuthIdentity, properties);
-            //context.Validated(ticket);
-            //context.Request.Context.Authentication.SignIn(oAuthIdentity);
-        }
-
-        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
-        {
-            foreach (var property in context.Properties.Dictionary)
+            var roleManager = userManager.GetRoles(user.Id);
+            var identity = new ClaimsIdentity(context.Options.AuthenticationType);
+            identity.AddClaim(new Claim("Id", user.Id));
+            identity.AddClaim(new Claim("Email", user.Email));
+            identity.AddClaim(new Claim("UserName", user.UserName));
+            foreach (var role in roleManager)
             {
-                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+                identity.AddClaim(new Claim(ClaimTypes.Role, role));
             }
-
-            return Task.FromResult<object>(null);
+            context.Validated(identity);
         }
-
-        public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        /// <inheritdoc />
+        /// <summary>
+        /// Method responsible for validating the client.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
-            // Учетные данные владельца ресурса не содержат идентификатор клиента.
-            if (context.ClientId == null)
-            {
-                context.Validated();
-            }
-
-            return Task.FromResult<object>(null);
-        }
-
-        //public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
-        //{
-        //    if (context.ClientId == _publicClientId)
-        //    {
-        //        var expectedRootUri = new Uri(context.Request.Uri, "/");
-
-        //        if (expectedRootUri.AbsoluteUri == context.RedirectUri)
-        //        {
-        //            context.Validated();
-        //        }
-        //    }
-
-        //    return Task.FromResult<object>(null);
-        //}
-
-        public static AuthenticationProperties CreateProperties(string userName)
-        {
-            IDictionary<string, string> data = new Dictionary<string, string>
-            {
-                { "userName", userName }
-            };
-            return new AuthenticationProperties(data);
-        }
+            context.Validated();
+        }   
     }
 }

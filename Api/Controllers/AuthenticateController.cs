@@ -8,6 +8,11 @@ using System.Web.Http;
 
 namespace Api.Controllers
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Controller for authentication and setting initial data in database.
+    /// </summary>
+    [AllowAnonymous]
     [Route("Api/Authentication/")]
     public class AuthenticateController : ApiController
     {

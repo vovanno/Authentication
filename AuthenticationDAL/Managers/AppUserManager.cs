@@ -7,6 +7,9 @@ using Microsoft.Owin;
 
 namespace AuthenticationDAL.Managers
 {
+    /// <summary>
+    /// Manager for interaction with users.
+    /// </summary>
     public class AppUserManager : UserManager<IdentityUser>, IUserManager
     {           
         public AppUserManager(IUserStore<IdentityUser> store): base(store)
@@ -17,13 +20,11 @@ namespace AuthenticationDAL.Managers
         public static AppUserManager Create(IdentityFactoryOptions<AppUserManager> options, IOwinContext context)
         {
             var manager = new AppUserManager(new UserStore<IdentityUser>(context.Get<IdentityContext>()));
-            // Настройка логики проверки имен пользователей 
             manager.UserValidator = new UserValidator<IdentityUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
             };
-            // Настройка логики проверки паролей
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
@@ -32,11 +33,6 @@ namespace AuthenticationDAL.Managers
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
-            //var dataProtectionProvider = options.DataProtectionProvider;
-            //if (dataProtectionProvider != null)
-            //{
-            //    manager.UserTokenProvider = new DataProtectorTokenProvider<AppUser>(dataProtectionProvider.Create("ASP.NET Identity"));
-            //}
             return manager;
         }
 

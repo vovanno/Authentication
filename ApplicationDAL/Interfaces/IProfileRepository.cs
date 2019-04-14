@@ -5,6 +5,10 @@ using ApplicationDAL.Entities;
 
 namespace ApplicationDAL.Interfaces
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides access for interaction with user's profiles.
+    /// </summary>
     public interface IProfileRepository: IDisposable
     {
         Task<ClientProfile> CreateProfileAsync(ClientProfile profile);

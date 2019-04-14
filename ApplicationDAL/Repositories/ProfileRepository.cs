@@ -7,6 +7,10 @@ using ApplicationDAL.Interfaces;
 
 namespace ApplicationDAL.Repositories
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Implements IProfileRepository for interaction with user's profiles.
+    /// </summary>
     public class ProfileRepository : IProfileRepository
     {
         private readonly IAppContext _context;

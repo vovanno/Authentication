@@ -8,6 +8,9 @@ using AutoMapper;
 
 namespace AuthenticateBLL.Services
 {
+    /// <summary>
+    /// Service for interaction with images through image repository.
+    /// </summary>
     public class ImageService : IImageService
     {
         private readonly IAppUnitOfWork _appUnit;

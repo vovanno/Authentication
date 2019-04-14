@@ -1,11 +1,15 @@
 ﻿using AuthenticateBLL.Interfaces;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 
 namespace Api.Controllers
 {
-
+    /// <inheritdoc />
+    /// <summary>
+    /// Controller for super users with extra rights for managing other users.
+    /// </summary>
     [Authorize(Roles = "admin")]
     [RoutePrefix("Api/Admin")]
     public class AdminController : ApiController
@@ -26,10 +30,10 @@ namespace Api.Controllers
         public async Task<IHttpActionResult> DeleteUser()
         {
             var userId = HttpContext.Current.Request.Params["UserId"];
-            var UserProfile = await _userService.GetUserProfile(userId);
-            var User = await _userService.GetUserByIdAsync(userId);
-            var deleteProfile = await _adminService.DeleteProfile(UserProfile);
-            var deleteUser = await _adminService.DeleteAsync(User);
+            var userProfile = await _userService.GetUserProfile(userId);
+            var user = await _userService.GetUserByIdAsync(userId);
+            var deleteProfile = await _adminService.DeleteProfile(userProfile);
+            var deleteUser = await _adminService.DeleteAsync(user);
             if (deleteProfile && deleteUser)
                 return Ok();
             return NotFound();
@@ -37,18 +41,18 @@ namespace Api.Controllers
 
         [HttpDelete]
         [Route("DeleteImage")]
-        public void DeleteImage()
+        public async Task<IHttpActionResult> DeleteImage()
         {
-            RedirectToRoute("Api/Images/DeleteImage", null);
-            //var arr = HttpContext.Current.Request.Params["ImageName"].Split('/');
-            //var imageName = arr[4];
-            //var imagePath = HttpContext.Current.Server.MapPath("~/Image") + "/" + imageName;
-            //if (File.Exists(imagePath))
-            //    File.Delete(imagePath);
-            //var result = await _imageService.DeleteImage(imageName);
-            //if (result)
-            //    return Ok();
-            //return NotFound();
+
+            var arr = HttpContext.Current.Request.Params["ImageName"].Split('/');
+            var imageName = arr[4];
+            var imagePath = HttpContext.Current.Server.MapPath("~/Image") + "/" + imageName;
+            if (File.Exists(imagePath))
+                File.Delete(imagePath);
+            var result = await _imageService.DeleteImage(imageName);
+            if (result)
+                return Ok();
+            return NotFound();
 
         }
     }

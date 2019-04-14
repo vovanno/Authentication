@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace AuthenticationDAL.Interfaces
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides interaction with identity context through this interface.
+    /// </summary>
     public interface IIdentiyContext : IDisposable
     {
         IDbSet<IdentityUser> Users { get; set; }

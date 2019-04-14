@@ -1,4 +1,6 @@
-﻿using AuthenticateBLL.DTO;
+﻿using ApplicationDAL.Entities;
+using ApplicationDAL.Interfaces;
+using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
 using AuthenticationDAL.Interfaces;
 using AutoMapper;
@@ -7,11 +9,12 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ApplicationDAL.Entities;
-using ApplicationDAL.Interfaces;
 
 namespace AuthenticateBLL.Services
 {
+    /// <summary>
+    /// Service for registering new users and set initial data in database.
+    /// </summary>
     public class AuthenticateService : IAuthenticateService
     {
         private readonly IUnitOfWork _unit;
@@ -69,8 +72,8 @@ namespace AuthenticateBLL.Services
             {
                 await _appUnit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
                 { Id = adm.Id, AvatarImage = "DefaultUser.jpg"}));
-                var getId = await _unit.UserManager.FindByEmailAsync(admin.Email);
-                await _unit.UserManager.AddToRoleAsync(getId.Id, "admin");
+                var userId = await _unit.UserManager.FindByEmailAsync(admin.Email);
+                await _unit.UserManager.AddToRoleAsync(userId.Id, "admin");
             }
         }
 

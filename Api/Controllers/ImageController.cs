@@ -11,6 +11,10 @@ using System.Web.Http;
 
 namespace Api.Controllers
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Controller for interaction with images though the image service.
+    /// </summary>
     [Authorize]
     [RoutePrefix("Api/Images")]
     public class ImageController : ApiController
@@ -67,7 +71,7 @@ namespace Api.Controllers
         [Route("Search/{caption}")]
         public IEnumerable<ImageDTO> SearchImages(string caption)
         {
-            var result =_image.SearchImages(caption);
+            var result =_image.SearchImages(caption).ToList();
             foreach (var image in result)
             {
                 image.ImageName = "http://localhost:51312/Image/" + image.ImageName;

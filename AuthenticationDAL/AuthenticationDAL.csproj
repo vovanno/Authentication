@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\IdentityContext.cs" />
-    <Compile Include="Entities\AppUser.cs" />
     <Compile Include="Managers\AppRoleManager.cs" />
     <Compile Include="Managers\AppUserManager.cs" />
     <Compile Include="Interfaces\IIdentiyContext.cs" />

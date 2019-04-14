@@ -4,14 +4,12 @@ using ApplicationDAL.Interfaces;
 
 namespace ApplicationDAL.Context
 {
+    /// <summary>
+    /// Implements DbContext for providing interaction with main functionality database.
+    /// </summary>
     public class AppContext : DbContext, IAppContext
     {
-        public AppContext()
-        {
-
-        }
-
-        public AppContext(string connection = "AppDataConnection") : base(connection)
+        public AppContext(string connection) : base(connection)
         {
 
         }

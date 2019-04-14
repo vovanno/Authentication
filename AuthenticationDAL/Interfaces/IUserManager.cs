@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace AuthenticationDAL.Interfaces
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides functionality for interaction with users. Provides access to user manager through this interface.
+    /// </summary>
     public interface IUserManager: IDisposable
     {
         Task<IdentityUser> FindByEmailAsync(string email);

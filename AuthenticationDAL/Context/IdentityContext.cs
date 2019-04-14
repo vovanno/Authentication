@@ -1,17 +1,15 @@
 ﻿using AuthenticationDAL.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity;
 
 namespace AuthenticationDAL.Context
 {
+    /// <summary>
+    /// Context for interaction with authenticate database.
+    /// </summary>
     public class IdentityContext : IdentityDbContext<IdentityUser>, IIdentiyContext
     {
         private static string _connectionString = "DefaultConnection";
 
-        public IdentityContext()
-        {
-
-        }
 
         public IdentityContext(string connectionString) : base(connectionString)
         {

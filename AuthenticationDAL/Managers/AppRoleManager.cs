@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using AuthenticationDAL.Context;
+﻿using AuthenticationDAL.Context;
 using AuthenticationDAL.Interfaces;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -8,6 +7,9 @@ using Microsoft.Owin;
 
 namespace AuthenticationDAL.Managers
 {
+    /// <summary>
+    /// Manager for interaction with roles.
+    /// </summary>
     public class AppRoleManager : RoleManager<IdentityRole>, IRoleManager
     {
         public AppRoleManager(IRoleStore<IdentityRole, string> store) : base(store)

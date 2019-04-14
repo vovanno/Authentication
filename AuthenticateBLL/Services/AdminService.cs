@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace AuthenticateBLL.Services
 {
+    /// <summary>
+    /// Provides access to manage users and their accounts.
+    /// </summary>
     public class AdminService : IAdminService
     {
         private readonly IUnitOfWork _unit;

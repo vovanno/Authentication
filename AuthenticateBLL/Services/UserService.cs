@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace AuthenticateBLL.Services
 {
+    /// <summary>
+    /// Service for interaction with users through users repository.
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly IAppUnitOfWork _appUnit;

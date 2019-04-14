@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace ApplicationDAL.Repositories
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Implements IImageRepository for interaction with images.
+    /// </summary>
     public class ImageRepository : IImageRepository
     {
         private readonly IAppContext _context;

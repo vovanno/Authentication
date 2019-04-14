@@ -1,11 +1,15 @@
 ﻿using AuthenticationDAL.Interfaces;
+using AuthenticationDAL.Managers;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using System.Threading.Tasks;
-using AuthenticationDAL.Managers;
 
 namespace AuthenticationDAL.Repositories
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Unit of work pattern for interaction with users and roles.
+    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IIdentiyContext _db;
@@ -28,7 +32,7 @@ namespace AuthenticationDAL.Repositories
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            _db.Dispose();
         }
     }
 }

@@ -3,6 +3,10 @@ using ApplicationDAL.Interfaces;
 
 namespace ApplicationDAL.Repositories
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Provides access for interaction with images and client's profiles.
+    /// </summary>
     public class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly IAppContext _appContext;
