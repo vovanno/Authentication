@@ -51,6 +51,7 @@
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Entities\ClientProfile.cs" />
     <Compile Include="Entities\Image.cs" />
+    <Compile Include="Exceptions\WrongPageException.cs" />
     <Compile Include="Interfaces\IAppContext.cs" />
     <Compile Include="Interfaces\IProfileRepository.cs" />
     <Compile Include="Interfaces\IImageRepository.cs" />

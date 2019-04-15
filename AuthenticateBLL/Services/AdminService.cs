@@ -1,4 +1,5 @@
-﻿using ApplicationDAL.Entities;
+﻿using System.Data.Entity;
+using ApplicationDAL.Entities;
 using ApplicationDAL.Interfaces;
 using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
@@ -27,6 +28,7 @@ namespace AuthenticateBLL.Services
         public async Task<bool> DeleteAsync(UserDTO user)
         {
             var tempUser = _mapper.Map<IdentityUser>(user);
+            _unit.Context.Entry(tempUser).State = EntityState.Deleted;
             var result = await _unit.UserManager.DeleteAsync(tempUser);
             return result.Succeeded;
         }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationDAL.Exceptions;
 
 namespace ApplicationDAL.Repositories
 {
@@ -51,11 +52,18 @@ namespace ApplicationDAL.Repositories
         public IEnumerable<Image> GetAllImages(int page)
         {
             var pageNumber=1;
-            const int pageSize = 8;
+            const int pageSize = 9;
             var totalItems = _context.Images.AsEnumerable().ToList().Count;
             var totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
-            if (page > 0 && page <totalPages+1)
+            if (page > 0 && page < totalPages + 1)
+            {
                 pageNumber = page;
+            }
+            else
+            {
+                throw new WrongPageException("Wrong page number, it can not be less then 0 and more than "+totalPages,totalPages);
+            }
+                
             return _context.Images.AsEnumerable().ToList().Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
 
@@ -66,7 +74,7 @@ namespace ApplicationDAL.Repositories
 
         public int GetPages()
         {
-            const int pageSize = 8;
+            const int pageSize = 9;
             var totalItems = _context.Images.AsEnumerable().ToList().Count;
             return (int)Math.Ceiling((decimal)totalItems / pageSize);
         }

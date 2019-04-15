@@ -11,6 +11,7 @@ namespace AuthenticationDAL.Interfaces
     {
         IRoleManager RoleManager { get; }
         IUserManager UserManager { get; }
+        IIdentiyContext Context { get; }
         Task SaveAsync();
     }
 }

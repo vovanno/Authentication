@@ -1,9 +1,9 @@
 ﻿using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,8 +16,8 @@ namespace Api.Controllers
     /// Controller for interaction with user's accounts. Allows only authorize users.
     /// </summary>
     [Authorize]
-    [RoutePrefix("Api/Profile")]
-    public class ProfileController : ApiController
+    [RoutePrefix("Profile")]
+    public class ProfileController : BaseApiController
     {
         private readonly IUserService _userService;
         private readonly IImageService _image;
@@ -28,20 +28,26 @@ namespace Api.Controllers
             _image = image;
         }
 
-        [HttpPost]
-        [Route("UploadAvatar")]
-        public async Task<IHttpActionResult> UploadAvatar()
+        [HttpPut]
+        [Route("{id}/Avatar")]
+        public async Task<IHttpActionResult> UploadAvatar(string id)
         {
+            if (!Secure(id))
+                return Unauthorized();
+            var profileClaims = (ClaimsIdentity)User.Identity;
+            if (profileClaims.FindFirst("Id").Value != id)
+            {
+                return Unauthorized();
+            }
             var httpRequest = HttpContext.Current.Request;
             var postedFile = httpRequest.Files["Image"];
             if (postedFile == null)
-                return NotFound();
+                return StatusCode(HttpStatusCode.NoContent);
             var imageName = new string(Path.GetFileNameWithoutExtension(postedFile.FileName).Take(10).ToArray());
             imageName = (imageName + DateTime.Now.ToString("HH:m:s tt zzz") + Path.GetExtension(postedFile.FileName))
                 .Replace(" ", "").Replace(":", "");
             var filePath = HttpContext.Current.Server.MapPath("~/Image") + "/" + imageName;
             postedFile.SaveAs(filePath);
-            var profileClaims = (ClaimsIdentity)User.Identity;
             var image = new ImageDTO()
             {
                 UserId = profileClaims.FindFirst("Id").Value,
@@ -57,57 +63,64 @@ namespace Api.Controllers
             var profileUpdate = await _userService.UpdateAvatar(image.UserId, image.ImageName);
             if (profileUpdate)
                 return Ok();
-            return BadRequest();
+            return StatusCode(HttpStatusCode.Conflict);
         }
 
         [HttpGet]
-        [Route("GetUsers")]
-        public IEnumerable<ProfileDTO> GetUsersList()
+        [Route("~/Users")]
+        public IHttpActionResult GetUsersList()
         {
             var result = _userService.GetUsersList().ToList();
             foreach (var user in result)
             {
                 user.AvatarImage = "http://localhost:51312/Image/" + user.AvatarImage;
             }
-            return result;
+            return Ok(result);
         }
 
-        [HttpPost]
-        [Route("ModifyProfile")]
-        public async Task<IHttpActionResult> ModifyProfileAsync(ProfileDTO profile)
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IHttpActionResult> ModifyProfileAsync(string id, ProfileDTO profile)
         {
+            if (!Secure(id))
+                return Unauthorized();
             var profileClaims = (ClaimsIdentity)User.Identity;
+            if (profileClaims.FindFirst("Id").Value != id)
+            {
+                return Unauthorized();
+            }
             profile.Id = profileClaims.FindFirst("Id").Value;
             var result = await _userService.ModifyUserProfile(profile);
             if (result)
             {
                 return Ok();
             }
-            return BadRequest();
+            return StatusCode(HttpStatusCode.Conflict);
         }
 
         [HttpGet]
-        [Route("GetUserProfile")]
-        public async Task<ProfileDTO> GetUserProfile()
+        [Route("{id}")]
+        public async Task<IHttpActionResult> GetUserProfile(string id)
         {
-            var profileId = ((ClaimsIdentity)User.Identity).FindFirst("Id").Value;
-            var temp = await _userService.GetUserProfile(profileId);
+            if (!Secure(id))
+                return Unauthorized();
+            var temp = await _userService.GetUserProfile(id);
             temp.AvatarImage = "http://localhost:51312/Image/" + temp.AvatarImage;
-            return temp;
+            return Ok(temp);
         }
 
         [HttpGet]
         [Route("{id}/Images")]
-        public IEnumerable<ImageDTO> GetUserImages(string id)
+        public IHttpActionResult GetUserImages(string id)
         {
-            var result = _image.GetUserImages(id).ToList();
+            var result =  _image.GetUserImages(id).ToList();
             if (!result.Any())
-                return null;
+                return Ok(result);
             foreach (var image in result)
             {
                 image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
             }
-            return result;
+            return Ok(result);
         }
     }
 }

@@ -38,11 +38,11 @@ namespace ApplicationDAL.Repositories
 
         public async Task<bool> DeleteProfileAsync(ClientProfile profile)
         {
-            var result = await _context.ClientProfiles.FindAsync(profile);
+            var result = await _context.ClientProfiles.FirstOrDefaultAsync(p => p.Id == profile.Id);
             if (result == null)
                 return false;
-            _context.ClientProfiles.Remove(profile);
-            _context.Entry(profile).State = EntityState.Deleted;
+            _context.Entry(result).State = EntityState.Deleted;
+            _context.ClientProfiles.Remove(result);
             await _context.SaveChangesAsync();
             return true;
         }

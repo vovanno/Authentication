@@ -215,6 +215,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\StartupAuth.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Startup.cs" />

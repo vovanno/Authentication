@@ -1,4 +1,5 @@
-﻿using AuthenticateBLL.DTO;
+﻿using System.Net;
+using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
@@ -13,7 +14,7 @@ namespace Api.Controllers
     /// Controller for authentication and setting initial data in database.
     /// </summary>
     [AllowAnonymous]
-    [Route("Api/Authentication/")]
+    [RoutePrefix("Authentication")]
     public class AuthenticateController : ApiController
     {
         private readonly IAuthenticateService _authenticate;
@@ -31,7 +32,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("Api/Authentication/Register")]
+        [Route("Register")]
         public async Task<IHttpActionResult> Register(UserDTO model)
         {
             await SetInitialData();
@@ -40,7 +41,7 @@ namespace Api.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _authenticate.Create(model);
-            return !result.Succeeded ? GetErrorResult(result) : Ok();
+            return !result.Succeeded ? GetErrorResult(result) : StatusCode(HttpStatusCode.Created);
         }
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
@@ -56,12 +57,11 @@ namespace Api.Controllers
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error);
+                    ModelState.AddModelError("ExceptionMessage", error);
                 }
             }
             if (ModelState.IsValid)
             {
-                // Ошибки ModelState для отправки отсутствуют, поэтому просто возвращается пустой BadRequest.
                 return BadRequest();
             }
             return BadRequest(ModelState);
@@ -69,7 +69,7 @@ namespace Api.Controllers
 
         [HttpGet]
         [Authorize]
-        [Route("api/GetUserClaims")]
+        [Route("Claims")]
         public UserDTO GetUserClaims()
         {
 

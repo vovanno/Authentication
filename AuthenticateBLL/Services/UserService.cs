@@ -6,6 +6,7 @@ using AuthenticationDAL.Interfaces;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace AuthenticateBLL.Services
 {
@@ -23,6 +24,8 @@ namespace AuthenticateBLL.Services
             _appUnit = appUnit;
             _authUnit = unit;
             _mapper = new MapperConfiguration(c=>c.CreateMap<ProfileDTO, ClientProfile>().ReverseMap()).CreateMapper();
+            _mapper = new MapperConfiguration(c => c.CreateMap<IdentityUser, UserDTO>().ReverseMap()).CreateMapper();
+            
         }
 
         public IEnumerable<ProfileDTO> GetUsersList()

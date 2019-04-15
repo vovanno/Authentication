@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuthenticateBLL.Services
@@ -37,11 +38,13 @@ namespace AuthenticateBLL.Services
             }
             tempUser = new IdentityUser() { Email = user.Email, UserName = user.UserName };
             var result = await _unit.UserManager.CreateAsync(tempUser, user.Password);
+            if (result.Errors.Any())
+                return result;
             await _appUnit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
             {
                 Id = tempUser.Id,
                 AvatarImage = "DefaultUser.jpg"
-        }));
+            }));
             if (result.Succeeded)
             {
                 var getId = await _unit.UserManager.FindByEmailAsync(user.Email);
@@ -71,7 +74,7 @@ namespace AuthenticateBLL.Services
             if (result.Succeeded)
             {
                 await _appUnit.ClientManager.CreateProfileAsync(_mapper.Map<ClientProfile>(new ProfileDTO()
-                { Id = adm.Id, AvatarImage = "DefaultUser.jpg"}));
+                { Id = adm.Id, AvatarImage = "DefaultUser.jpg" }));
                 var userId = await _unit.UserManager.FindByEmailAsync(admin.Email);
                 await _unit.UserManager.AddToRoleAsync(userId.Id, "admin");
             }

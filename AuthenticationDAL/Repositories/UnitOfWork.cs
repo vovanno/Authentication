@@ -12,27 +12,27 @@ namespace AuthenticationDAL.Repositories
     /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IIdentiyContext _db;
         private IRoleManager _roleManager;
         private IUserManager _userManager;
 
 
         public UnitOfWork(IIdentiyContext context)
         {
-            _db = context;
+            Context = context;
         }
 
-        public IRoleManager RoleManager => _roleManager ?? (_roleManager = new AppRoleManager(new RoleStore<IdentityRole>((DbContext)_db)));
-        public IUserManager UserManager => _userManager ?? (_userManager = new AppUserManager(new UserStore<IdentityUser>((DbContext)_db)));
+        public IIdentiyContext Context { get; }
+        public IRoleManager RoleManager => _roleManager ?? (_roleManager = new AppRoleManager(new RoleStore<IdentityRole>((DbContext)Context)));
+        public IUserManager UserManager => _userManager ?? (_userManager = new AppUserManager(new UserStore<IdentityUser>((DbContext)Context)));
 
         public async Task SaveAsync()
         {
-            await _db.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            _db.Dispose();
+            Context.Dispose();
         }
     }
 }

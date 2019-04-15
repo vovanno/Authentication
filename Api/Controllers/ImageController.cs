@@ -4,20 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
 using System.Web;
 using System.Web.Http;
+using ApplicationDAL.Exceptions;
 
 namespace Api.Controllers
 {
     /// <inheritdoc />
     /// <summary>
-    /// Controller for interaction with images though the image service.
+    /// Controller for interaction with images through the image service.
     /// </summary>
     [Authorize]
-    [RoutePrefix("Api/Images")]
-    public class ImageController : ApiController
+    [RoutePrefix("Images")]
+    public class ImageController : BaseApiController
     {
         private readonly IImageService _image;
 
@@ -27,9 +29,12 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Route("UploadImage")]
+        [Route("")]
         public async Task<IHttpActionResult> UploadImage()
         {
+            var profile = (ClaimsIdentity)User.Identity;
+            if (!Secure(profile.FindFirst("Id").Value))
+                return Unauthorized();
             var postedFile = HttpContext.Current.Request.Files["Image"];
             if (postedFile == null)
                 return BadRequest();
@@ -38,7 +43,6 @@ namespace Api.Controllers
                 .Replace(" ", "").Replace(":", "");
             var filePath = HttpContext.Current.Server.MapPath("~/Image") + "/" + imageName;
             postedFile.SaveAs(filePath);
-            var profile = (ClaimsIdentity)User.Identity;
             var image = new ImageDTO()
             {
                 UserId = profile.FindFirst("Id").Value,
@@ -47,42 +51,29 @@ namespace Api.Controllers
             };
             var result = await _image.UploadImage(image);
             if (result)
-                return Ok();
-            return BadRequest();
-        }
-
-        [HttpGet]
-        [Route("GetUserImages")]
-        public IEnumerable<ImageDTO> GetUserImages()
-        {
-            var user = (ClaimsIdentity) User.Identity;
-            var result = _image.GetUserImages(user.FindFirst("Id").Value).ToList();
-            if (!result.Any())
-                return null;
-            foreach (var image in result)
-            {
-                image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
-            }
-            return result;
+                return StatusCode(HttpStatusCode.Created);
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("Search/{caption}")]
-        public IEnumerable<ImageDTO> SearchImages(string caption)
+        public IHttpActionResult SearchImages(string caption)
         {
             var result =_image.SearchImages(caption).ToList();
             foreach (var image in result)
             {
                 image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
             }
-            return result;
+            return Ok(result);
         }
 
         [HttpDelete]
-        [Route("DeleteImage")]
-        public async Task<IHttpActionResult> DeleteImage()
+        [Route("{id}")]
+        public async Task<IHttpActionResult> DeleteImage(string id)
         {
+            if (!Secure(id))
+                return Unauthorized();
             var arr = HttpContext.Current.Request.Params["ImageName"].Split('/');
             var imageName = arr[4];
             var imagePath = HttpContext.Current.Server.MapPath("~/Image") + "/" + imageName;
@@ -90,32 +81,37 @@ namespace Api.Controllers
                 File.Delete(imagePath);
             var result = await _image.DeleteImage(imageName);
             if (result)
-                return Ok();
+                return StatusCode(HttpStatusCode.NoContent);
             return NotFound();
         }
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("GetAllImages/{page:int:min(1)}")]
-        public IEnumerable<ImageDTO> GetAllImages(int page)
+        [Route("{page:int:min(1)}")]
+        public IHttpActionResult GetAllImages(int page)
         {
-            var result = _image.GetAllImages(page).ToList();
+            IEnumerable<ImageDTO> result;
+            try
+            {
+                result = _image.GetAllImages(page).ToList();
+            }
+            catch (WrongPageException e)
+            {
+                return BadRequest(e.ToString());
+            }
             foreach (var image in result)
             {
                 image.ImageName = "http://localhost:51312/Image/" + image.ImageName;
             }
-            return result;
+            return Ok(result);
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("GetPages")]
-        public int GetPages()
+        public IHttpActionResult GetPages()
         {
-            return _image.GetPages();
+            return Ok(_image.GetPages());
         }
-
-
-
     }
 }

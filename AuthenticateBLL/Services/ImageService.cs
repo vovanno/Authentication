@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using ApplicationDAL.Entities;
+﻿using ApplicationDAL.Entities;
+using ApplicationDAL.Exceptions;
 using ApplicationDAL.Interfaces;
 using AuthenticateBLL.DTO;
 using AuthenticateBLL.Interfaces;
 using AutoMapper;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AuthenticateBLL.Services
 {
@@ -45,7 +46,15 @@ namespace AuthenticateBLL.Services
 
         public IEnumerable<ImageDTO> GetAllImages(int page)
         {
-            var result = _appUnit.ImageManager.GetAllImages(page);
+            IEnumerable<Image> result;
+            try
+            {
+                 result = _appUnit.ImageManager.GetAllImages(page);
+            }
+            catch (WrongPageException e)
+            {
+                throw new WrongPageException("Wrong page number",e);
+            }
             return _mapper.Map<IEnumerable<ImageDTO>>(result);
         }
 
